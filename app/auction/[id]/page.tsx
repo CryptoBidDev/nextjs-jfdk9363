@@ -598,7 +598,7 @@ export default function AuctionPage({ params }: { params: { id: string } }) {
 
     notifyBidPlaced({
       auctionId: params.id,
-      assetName: auction.title,
+      assetName: auction?.title || 'Auction',
       amount: bidAmountUsd,
     });
 
