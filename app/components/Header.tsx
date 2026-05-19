@@ -16,8 +16,12 @@ export default function Header() {
   useEffect(() => {
     const loadUser = () => {
       const savedUser = localStorage.getItem('cryptobidx-user');
-      if (savedUser) setUser(JSON.parse(savedUser));
-      if (!savedUser) setUser(null);
+
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      } else {
+        setUser(null);
+      }
     };
 
     loadUser();
@@ -37,7 +41,7 @@ export default function Header() {
     setShowLogoutConfirm(false);
 
     window.dispatchEvent(new Event('cryptobidx_data_updated'));
-
+  }
 
   return (
     <>
@@ -56,13 +60,14 @@ export default function Header() {
                   BidX
                 </span>
               </p>
+
               <p className="text-xs text-slate-500 tracking-wide uppercase mt-1">
                 Escrow-backed crypto auctions
               </p>
             </div>
           </Link>
 
-          {/* CENTER NAV (always visible) */}
+          {/* CENTER NAV */}
           <nav className="flex justify-center items-center gap-6 text-sm">
             <Link
               href="/how-it-works"
@@ -70,30 +75,35 @@ export default function Header() {
             >
               How It Works
             </Link>
+
             <Link
               href="/why"
               className="text-slate-300 hover:text-white transition font-semibold"
             >
               Why
             </Link>
+
             <Link
               href="/for-sellers"
               className="text-slate-300 hover:text-white transition font-semibold"
             >
               Sellers
             </Link>
+
             <Link
               href="/for-buyers"
               className="text-slate-300 hover:text-white transition font-semibold"
             >
               Buyers
             </Link>
+
             <Link
               href="/trust"
               className="text-slate-300 hover:text-white transition font-semibold"
             >
               Trust
             </Link>
+
             <Link
               href="/faq"
               className="text-slate-300 hover:text-white transition font-semibold"
@@ -104,11 +114,9 @@ export default function Header() {
 
           {/* RIGHT SIDE */}
           <div className="flex items-center gap-3 justify-end">
-            {/* 🔔 ONLY show bell when logged in */}
             {user && <NotificationBell />}
 
-            {/* 🔒 AUTH-ONLY BUTTONS */}
-            {user && (
+            {user ? (
               <>
                 <Link
                   href="/dashboard"
@@ -140,7 +148,10 @@ export default function Header() {
 
                 <div className="rounded-xl bg-[#020617] border border-slate-800 px-4 py-2 min-w-[190px]">
                   <p className="text-xs text-slate-500">Logged in as</p>
-                  <p className="text-sm font-semibold truncate">{user.email}</p>
+
+                  <p className="text-sm font-semibold truncate">
+                    {user.email}
+                  </p>
                 </div>
 
                 <button
@@ -150,10 +161,7 @@ export default function Header() {
                   Logout
                 </button>
               </>
-            )}
-
-            {/* 🔓 LOGGED OUT STATE */}
-            {!user && (
+            ) : (
               <Link
                 href="/login"
                 className="rounded-xl bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-500 transition whitespace-nowrap"
@@ -165,11 +173,13 @@ export default function Header() {
         </div>
       </header>
 
-      {/* LOGOUT CONFIRM MODAL */}
+      {/* LOGOUT MODAL */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 p-8">
-            <h2 className="text-2xl font-bold mb-3">Confirm Logout</h2>
+            <h2 className="text-2xl font-bold mb-3">
+              Confirm Logout
+            </h2>
 
             <p className="text-slate-400 mb-6">
               Are you sure you want to log out of your CryptoBidX account?
