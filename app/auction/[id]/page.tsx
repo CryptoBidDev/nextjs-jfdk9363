@@ -605,7 +605,7 @@ export default function AuctionPage({ params }: { params: { id: string } }) {
     if (previousHighestBid && previousHighestBid.bidder !== user.email) {
       notifyOutbid({
         auctionId: params.id,
-        assetName: auction.title,
+        assetName: auction?.title || 'Auction',
         amount: bidAmountUsd,
       });
     }
