@@ -38,12 +38,6 @@ export default function Header() {
 
     window.dispatchEvent(new Event('cryptobidx_data_updated'));
 
-    notify({
-      type: 'success',
-      title: 'Logged out',
-      message: 'You have been successfully logged out.',
-    });
-  }
 
   return (
     <>
