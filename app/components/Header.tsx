@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import NotificationBell from '@/app/components/NotificationBell';
+import { notify } from '@/app/lib/notifications';
 
 type User = {
   email: string;
