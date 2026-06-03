@@ -278,25 +278,25 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#020617] text-white">
       <section className="w-full mx-auto bg-[#020617]">
-        <div className="grid gap-10 lg:grid-cols-2 items-center mb-12">
+        <div className="grid gap-8 lg:gap-12 lg:grid-cols-2 items-center mb-12">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm text-emerald-300 mb-5">
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
               Non-custodial marketplace design
             </div>
 
-            <h1 className="text-5xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Convert crypto to fiat through secure, escrow-backed auctions.
             </h1>
 
-            <p className="text-slate-400 text-lg mb-8">
+            <p className="text-slate-400 text-base sm:text-lg mb-8 max-w-2xl">
               CryptoBidX gives sellers transparent price discovery and gives
               buyers confidence through regulated payment confirmation,
               escrow-based settlement and a platform design that does not rely
               on blind trust.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-wrap">
               <Link
                 href="/auctions"
                 className="rounded-xl bg-blue-600 px-6 py-3 font-semibold hover:bg-blue-500 transition text-center"
@@ -331,44 +331,52 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-slate-900 border border-slate-800 p-8 shadow-2xl shadow-blue-500/5">
+          <div className="rounded-3xl bg-slate-900 border border-slate-800 p-5 sm:p-8 shadow-2xl shadow-blue-500/5">
             <div className="mb-6">
               <p className="text-sm text-slate-500">Marketplace Trust Layer</p>
-              <h2 className="text-2xl font-bold mt-1">
+              <h2 className="text-xl sm:text-2xl font-bold mt-1">
                 Built for price discovery, verified payment and controlled
                 settlement.
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-5">
-                <p className="text-slate-500 text-sm">Live Auctions</p>
-                <p className="text-3xl font-bold mt-2">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-4 sm:p-5">
+                <p className="text-slate-500 text-xs sm:text-sm">
+                  Live Auctions
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold mt-2">
                   {mounted ? allAuctions.length : 0}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-5">
-                <p className="text-slate-500 text-sm">Seller Listings</p>
-                <p className="text-3xl font-bold mt-2">
+              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-4 sm:p-5">
+                <p className="text-slate-500 text-xs sm:text-sm">
+                  Seller Listings
+                </p>
+                <p className="text-2xl sm:text-3xl font-bold mt-2">
                   {mounted ? sellerListingCount : 0}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-5">
-                <p className="text-slate-500 text-sm">Auction Bid Value</p>
-                <p className="text-2xl font-bold mt-2">
+              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-4 sm:p-5">
+                <p className="text-slate-500 text-xs sm:text-sm">
+                  Auction Bid Value
+                </p>
+                <p className="text-xl sm:text-2xl font-bold mt-2">
                   {formatUsd(mounted ? totalLiveValue : 0)}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-5">
-                <p className="text-slate-500 text-sm">Trust Model</p>
-                <p className="text-2xl font-bold mt-2">Escrow</p>
+              <div className="rounded-2xl bg-[#020617] border border-slate-800 p-4 sm:p-5">
+                <p className="text-slate-500 text-xs sm:text-sm">
+                  Trust Model
+                </p>
+                <p className="text-xl sm:text-2xl font-bold mt-2">Escrow</p>
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-5">
+            <div className="mt-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 sm:p-5">
               <p className="font-semibold text-emerald-400">
                 Designed to reduce counterparty risk
               </p>
@@ -416,8 +424,10 @@ export default function Home() {
         <div id="auctions" className="mb-16">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 mb-6">
             <div>
-              <h2 className="text-3xl font-bold">Latest Auctions</h2>
-              <p className="text-slate-400 mt-2">
+              <h2 className="text-2xl sm:text-3xl font-bold">
+                Latest Auctions
+              </h2>
+              <p className="text-slate-400 mt-2 max-w-3xl">
                 A snapshot of the newest live listings on CryptoBidX. Visit the
                 full auction marketplace to browse every available listing.
               </p>
@@ -449,9 +459,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {latestAuctions.length === 0 ? (
-              <div className="md:col-span-2 xl:col-span-4 rounded-2xl bg-slate-900 border border-slate-800 p-8 text-center">
+              <div className="sm:col-span-2 xl:col-span-4 rounded-2xl bg-slate-900 border border-slate-800 p-8 text-center">
                 <p className="text-slate-300 font-semibold">
                   No auctions found.
                 </p>
@@ -524,12 +534,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="rounded-3xl bg-blue-600 p-8 text-center mb-16">
-          <h2 className="text-3xl font-bold mb-3">
+        <div className="rounded-3xl bg-blue-600 p-6 sm:p-8 text-center mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">
             Sell with better price discovery. Buy with greater confidence.
           </h2>
 
-          <p className="text-blue-100 mb-6">
+          <p className="text-blue-100 mb-6 max-w-3xl mx-auto">
             CryptoBidX combines transparent auctions, escrow-backed settlement
             and regulated payment confirmation to reduce risk on both sides of
             the transaction.
