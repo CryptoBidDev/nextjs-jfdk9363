@@ -12,16 +12,13 @@ type User = {
 export default function Header() {
   const [user, setUser] = useState<User | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const loadUser = () => {
       const savedUser = localStorage.getItem('cryptobidx-user');
-
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      } else {
-        setUser(null);
-      }
+      if (savedUser) setUser(JSON.parse(savedUser));
+      if (!savedUser) setUser(null);
     };
 
     loadUser();
@@ -39,153 +36,205 @@ export default function Header() {
     localStorage.removeItem('cryptobidx-user');
     setUser(null);
     setShowLogoutConfirm(false);
+    setMobileMenuOpen(false);
 
     window.dispatchEvent(new Event('cryptobidx_data_updated'));
+
+    notify({
+      type: 'success',
+      title: 'Logged out',
+      message: 'You have been successfully logged out.',
+    });
   }
 
   return (
     <>
-      <header className="w-full bg-[#020617] text-white mb-12">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-8">
-          {/* LOGO */}
-          <Link href="/" className="flex items-center gap-4 shrink-0">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-              <span className="text-3xl font-black text-white">X</span>
-            </div>
-
-            <div>
-              <p className="text-3xl font-black tracking-tight leading-none">
-                Crypto
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-transparent">
-                  BidX
-                </span>
-              </p>
-
-              <p className="text-xs text-slate-500 tracking-wide uppercase mt-1">
-                Escrow-backed crypto auctions
-              </p>
-            </div>
-          </Link>
-
-          {/* CENTER NAV */}
-          <nav className="flex justify-center items-center gap-6 text-sm">
+      <header className="w-full bg-[#020617] text-white mb-8 lg:mb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* LOGO */}
             <Link
-              href="/how-it-works"
-              className="text-slate-300 hover:text-white transition font-semibold"
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 shrink-0"
             >
-              How It Works
+              <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                <span className="text-2xl sm:text-3xl font-black text-white">X</span>
+              </div>
+
+              <div>
+                <p className="text-xl sm:text-3xl font-black tracking-tight leading-none">
+                  Crypto
+                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-transparent">
+                    BidX
+                  </span>
+                </p>
+                <p className="hidden sm:block text-xs text-slate-500 tracking-wide uppercase mt-1">
+                  Escrow-backed crypto auctions
+                </p>
+              </div>
             </Link>
 
-            <Link
-              href="/why"
-              className="text-slate-300 hover:text-white transition font-semibold"
-            >
-              Why
-            </Link>
-
-            <Link
-              href="/for-sellers"
-              className="text-slate-300 hover:text-white transition font-semibold"
-            >
-              Sellers
-            </Link>
-
-            <Link
-              href="/for-buyers"
-              className="text-slate-300 hover:text-white transition font-semibold"
-            >
-              Buyers
-            </Link>
-
-            <Link
-              href="/trust"
-              className="text-slate-300 hover:text-white transition font-semibold"
-            >
-              Trust
-            </Link>
-
-            <Link
-              href="/faq"
-              className="text-slate-300 hover:text-white transition font-semibold"
-            >
-              FAQ
-            </Link>
-          </nav>
-
-          {/* RIGHT SIDE */}
-          <div className="flex items-center gap-3 justify-end">
-            {user && <NotificationBell />}
-
-            {user ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  className="rounded-xl bg-cyan-600 px-4 py-2 font-semibold hover:bg-cyan-500 transition"
-                >
-                  Dashboard
-                </Link>
-
-                <Link
-                  href="/wallet"
-                  className="rounded-xl bg-purple-600 px-4 py-2 font-semibold hover:bg-purple-500 transition"
-                >
-                  Wallet
-                </Link>
-
-                <Link
-                  href="/sell"
-                  className="rounded-xl bg-emerald-600 px-4 py-2 font-semibold hover:bg-emerald-500 transition whitespace-nowrap"
-                >
-                  Sell Crypto
-                </Link>
-
-                <Link
-                  href="/admin"
-                  className="rounded-xl bg-red-600 px-4 py-2 font-semibold hover:bg-red-500 transition"
-                >
-                  Admin
-                </Link>
-
-                <div className="rounded-xl bg-[#020617] border border-slate-800 px-4 py-2 min-w-[190px]">
-                  <p className="text-xs text-slate-500">Logged in as</p>
-
-                  <p className="text-sm font-semibold truncate">
-                    {user.email}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowLogoutConfirm(true)}
-                  className="rounded-xl bg-red-600 px-4 py-2 font-semibold hover:bg-red-500 transition"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="rounded-xl bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-500 transition whitespace-nowrap"
-              >
-                Login / Register
+            {/* DESKTOP NAV */}
+            <nav className="hidden xl:flex justify-center items-center gap-6 text-sm">
+              <Link href="/how-it-works" className="text-slate-300 hover:text-white transition font-semibold">
+                How It Works
               </Link>
-            )}
+              <Link href="/why" className="text-slate-300 hover:text-white transition font-semibold">
+                Why
+              </Link>
+              <Link href="/for-sellers" className="text-slate-300 hover:text-white transition font-semibold">
+                Sellers
+              </Link>
+              <Link href="/for-buyers" className="text-slate-300 hover:text-white transition font-semibold">
+                Buyers
+              </Link>
+              <Link href="/trust" className="text-slate-300 hover:text-white transition font-semibold">
+                Trust
+              </Link>
+              <Link href="/faq" className="text-slate-300 hover:text-white transition font-semibold">
+                FAQ
+              </Link>
+            </nav>
+
+            {/* DESKTOP RIGHT SIDE */}
+            <div className="hidden xl:flex items-center gap-3 justify-end">
+              {user && <NotificationBell />}
+
+              {user && (
+                <>
+                  <Link href="/dashboard" className="rounded-xl bg-cyan-600 px-4 py-2 font-semibold hover:bg-cyan-500 transition">
+                    Dashboard
+                  </Link>
+
+                  <Link href="/wallet" className="rounded-xl bg-purple-600 px-4 py-2 font-semibold hover:bg-purple-500 transition">
+                    Wallet
+                  </Link>
+
+                  <Link href="/sell" className="rounded-xl bg-emerald-600 px-4 py-2 font-semibold hover:bg-emerald-500 transition whitespace-nowrap">
+                    Sell Crypto
+                  </Link>
+
+                  <Link href="/admin" className="rounded-xl bg-red-600 px-4 py-2 font-semibold hover:bg-red-500 transition">
+                    Admin
+                  </Link>
+
+                  <div className="rounded-xl bg-[#020617] border border-slate-800 px-4 py-2 min-w-[190px]">
+                    <p className="text-xs text-slate-500">Logged in as</p>
+                    <p className="text-sm font-semibold truncate">{user.email}</p>
+                  </div>
+
+                  <button
+                    onClick={() => setShowLogoutConfirm(true)}
+                    className="rounded-xl bg-red-600 px-4 py-2 font-semibold hover:bg-red-500 transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+
+              {!user && (
+                <Link href="/login" className="rounded-xl bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-500 transition whitespace-nowrap">
+                  Login / Register
+                </Link>
+              )}
+            </div>
+
+            {/* MOBILE RIGHT SIDE */}
+            <div className="flex xl:hidden items-center gap-3">
+              {user && <NotificationBell />}
+
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="rounded-xl border border-slate-700 px-3 py-2 text-xl font-bold text-white"
+                aria-label="Toggle mobile menu"
+              >
+                {mobileMenuOpen ? '×' : '☰'}
+              </button>
+            </div>
           </div>
+
+          {/* MOBILE MENU */}
+          {mobileMenuOpen && (
+            <div className="xl:hidden mt-5 rounded-3xl border border-slate-800 bg-slate-950 p-4 shadow-2xl">
+              <nav className="grid gap-2 text-sm">
+                <Link onClick={() => setMobileMenuOpen(false)} href="/how-it-works" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  How It Works
+                </Link>
+                <Link onClick={() => setMobileMenuOpen(false)} href="/why" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  Why
+                </Link>
+                <Link onClick={() => setMobileMenuOpen(false)} href="/for-sellers" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  Sellers
+                </Link>
+                <Link onClick={() => setMobileMenuOpen(false)} href="/for-buyers" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  Buyers
+                </Link>
+                <Link onClick={() => setMobileMenuOpen(false)} href="/trust" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  Trust
+                </Link>
+                <Link onClick={() => setMobileMenuOpen(false)} href="/faq" className="rounded-xl px-4 py-3 text-slate-300 hover:bg-slate-900 hover:text-white font-semibold">
+                  FAQ
+                </Link>
+              </nav>
+
+              <div className="mt-4 border-t border-slate-800 pt-4">
+                {user ? (
+                  <div className="grid gap-3">
+                    <Link onClick={() => setMobileMenuOpen(false)} href="/dashboard" className="rounded-xl bg-cyan-600 px-4 py-3 text-center font-semibold hover:bg-cyan-500 transition">
+                      Dashboard
+                    </Link>
+
+                    <Link onClick={() => setMobileMenuOpen(false)} href="/wallet" className="rounded-xl bg-purple-600 px-4 py-3 text-center font-semibold hover:bg-purple-500 transition">
+                      Wallet
+                    </Link>
+
+                    <Link onClick={() => setMobileMenuOpen(false)} href="/sell" className="rounded-xl bg-emerald-600 px-4 py-3 text-center font-semibold hover:bg-emerald-500 transition">
+                      Sell Crypto
+                    </Link>
+
+                    <Link onClick={() => setMobileMenuOpen(false)} href="/admin" className="rounded-xl bg-red-600 px-4 py-3 text-center font-semibold hover:bg-red-500 transition">
+                      Admin
+                    </Link>
+
+                    <div className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
+                      <p className="text-xs text-slate-500">Logged in as</p>
+                      <p className="text-sm font-semibold truncate">{user.email}</p>
+                    </div>
+
+                    <button
+                      onClick={() => setShowLogoutConfirm(true)}
+                      className="rounded-xl bg-red-600 px-4 py-3 font-semibold hover:bg-red-500 transition"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    onClick={() => setMobileMenuOpen(false)}
+                    href="/login"
+                    className="block rounded-xl bg-blue-600 px-4 py-3 text-center font-semibold hover:bg-blue-500 transition"
+                  >
+                    Login / Register
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* LOGOUT MODAL */}
+      {/* LOGOUT CONFIRM MODAL */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 p-8">
-            <h2 className="text-2xl font-bold mb-3">
-              Confirm Logout
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 p-6 sm:p-8">
+            <h2 className="text-2xl font-bold mb-3">Confirm Logout</h2>
 
             <p className="text-slate-400 mb-6">
               Are you sure you want to log out of your CryptoBidX account?
             </p>
 
-            <div className="flex gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
                 className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 font-semibold hover:border-blue-500 transition"
