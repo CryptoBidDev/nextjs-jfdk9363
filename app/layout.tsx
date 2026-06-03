@@ -20,11 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} min-h-screen bg-[#020617] text-white`}
+        className={`${inter.className} min-h-screen bg-[#020617] text-white overflow-x-hidden`}
       >
         <ToastProvider />
 
-        <div className="min-h-screen bg-[#020617] px-10 xl:px-16 py-8">
+        <div className="min-h-screen bg-[#020617] px-4 sm:px-6 lg:px-10 xl:px-16 py-5 sm:py-8">
           <Header />
           {children}
           <Footer />
