@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import ToastProvider from './components/ToastProvider';
 import Header from './components/Header';
@@ -10,6 +10,12 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'CryptoBidX',
   description: 'Escrow-backed crypto auction marketplace',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -24,7 +30,7 @@ export default function RootLayout({
       >
         <ToastProvider />
 
-        <div className="min-h-screen bg-[#020617] px-4 sm:px-6 lg:px-10 xl:px-16 py-5 sm:py-8">
+        <div className="min-h-screen bg-[#020617] px-4 sm:px-6 lg:px-10 xl:px-16 py-5 sm:py-8 overflow-x-hidden">
           <Header />
           {children}
           <Footer />
