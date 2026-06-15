@@ -32,18 +32,8 @@ type Auction = {
   bidCount?: number;
 };
 
-type FilterStatus =
-  | 'all'
-  | 'live'
-  | 'endingSoon'
-  | 'ended'
-  | 'sellerListings';
-
-type SortOption =
-  | 'featured'
-  | 'highestBid'
-  | 'endingSoon'
-  | 'newest';
+type FilterStatus = 'all' | 'live' | 'endingSoon' | 'ended' | 'sellerListings';
+type SortOption = 'featured' | 'highestBid' | 'endingSoon' | 'newest';
 
 function formatUsd(amount: number) {
   return new Intl.NumberFormat('en-US', {
@@ -125,9 +115,7 @@ function getAuctionStatus(auction: Auction) {
 
 function mapSupabaseAuction(row: any): Auction {
   const symbol = row.symbol || row.asset_name || 'CRYPTO';
-  const currentBid = Number(
-    row.current_bid_usd || row.starting_price_usd || 0
-  );
+  const currentBid = Number(row.current_bid_usd || row.starting_price_usd || 0);
 
   return {
     id: row.id,
@@ -142,14 +130,10 @@ function mapSupabaseAuction(row: any): Auction {
     endsAt: row.ends_at,
     sellerCreated: true,
     asset: row.asset_name || symbol,
-    assetAmount: row.asset_amount
-      ? String(row.asset_amount)
-      : undefined,
+    assetAmount: row.asset_amount ? String(row.asset_amount) : undefined,
     escrowStatus: row.metadata?.escrow_status || 'secured',
-    paymentStatus:
-      row.metadata?.payment_status || 'awaiting_winner',
-    settlementStatus:
-      row.settlement_status || 'auction_live',
+    paymentStatus: row.metadata?.payment_status || 'awaiting_winner',
+    settlementStatus: row.settlement_status || 'auction_live',
     bidCount: Number(row.bid_count || 0),
   };
 }
@@ -157,18 +141,12 @@ function mapSupabaseAuction(row: any): Auction {
 export default function AuctionsPage() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [liveBids, setLiveBids] = useState<
-    Record<string, number>
-  >({});
-  const [bidCounts, setBidCounts] = useState<
-    Record<string, number>
-  >({});
+  const [liveBids, setLiveBids] = useState<Record<string, number>>({});
+  const [bidCounts, setBidCounts] = useState<Record<string, number>>({});
   const [allAuctions, setAllAuctions] = useState<Auction[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] =
-    useState<FilterStatus>('all');
-  const [sortOption, setSortOption] =
-    useState<SortOption>('featured');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('featured');
 
   async function loadMarketplaceData() {
     setMounted(true);
@@ -185,15 +163,9 @@ export default function AuctionsPage() {
       };
 
       setUser(authUserObject);
-
-      localStorage.setItem(
-        'cryptobidx-user',
-        JSON.stringify(authUserObject)
-      );
+      localStorage.setItem('cryptobidx-user', JSON.stringify(authUserObject));
     } else {
-      const savedUser = localStorage.getItem(
-        'cryptobidx-user'
-      );
+      const savedUser = localStorage.getItem('cryptobidx-user');
 
       if (savedUser) {
         try {
@@ -237,9 +209,7 @@ export default function AuctionsPage() {
       return;
     }
 
-    const mappedAuctions = (data || []).map(
-      mapSupabaseAuction
-    );
+    const mappedAuctions = (data || []).map(mapSupabaseAuction);
 
     const bids: Record<string, number> = {};
     const counts: Record<string, number> = {};
@@ -314,8 +284,7 @@ export default function AuctionsPage() {
       const matchesStatus =
         filterStatus === 'all' ||
         status.value === filterStatus ||
-        (filterStatus === 'sellerListings' &&
-          auction.sellerCreated);
+        (filterStatus === 'sellerListings' && auction.sellerCreated);
 
       return matchesSearch && matchesStatus;
     });
@@ -324,14 +293,10 @@ export default function AuctionsPage() {
       const bidA = liveBids[a.id] || a.currentBid;
       const bidB = liveBids[b.id] || b.currentBid;
 
-      if (sortOption === 'highestBid')
-        return bidB - bidA;
+      if (sortOption === 'highestBid') return bidB - bidA;
 
       if (sortOption === 'endingSoon') {
-        return (
-          getRemainingMilliseconds(a) -
-          getRemainingMilliseconds(b)
-        );
+        return getRemainingMilliseconds(a) - getRemainingMilliseconds(b);
       }
 
       if (sortOption === 'newest') {
@@ -343,37 +308,25 @@ export default function AuctionsPage() {
 
       return 0;
     });
-  }, [
-    allAuctions,
-    filterStatus,
-    liveBids,
-    searchQuery,
-    sortOption,
-  ]);
+  }, [allAuctions, filterStatus, liveBids, searchQuery, sortOption]);
 
   return (
-    <main className="min-h-screen bg-[#020617] text-white">
-      <section className="w-full mx-auto bg-[#020617]">
-
+    <main className="min-h-screen bg-[#020617] text-white overflow-x-hidden">
+      <section className="w-full mx-auto bg-[#020617] overflow-x-hidden">
         <div id="auctions" className="mb-16">
-
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 mb-6">
-
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-5 sm:gap-6 mb-6">
             <div>
-              <h1 className="text-4xl font-bold">
+              <h1 className="text-3xl sm:text-4xl font-bold leading-tight">
                 All Live Auctions
               </h1>
 
-              <p className="text-slate-400 mt-2 max-w-2xl">
-                Browse active crypto auctions with
-                transparent bidding, live settlement
-                tracking and escrow-backed transaction
-                flow.
+              <p className="text-slate-400 mt-2 max-w-2xl text-sm sm:text-base">
+                Browse active crypto auctions with transparent bidding, live
+                settlement tracking and escrow-backed transaction flow.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-
               <Link
                 href="/sell"
                 className="rounded-xl bg-emerald-600 px-5 py-3 font-semibold hover:bg-emerald-500 transition text-center"
@@ -389,35 +342,25 @@ export default function AuctionsPage() {
                   Auction Management
                 </Link>
               )}
-
             </div>
           </div>
 
-          <div className="mb-6 rounded-3xl bg-slate-900 border border-slate-800 p-5">
-
-            <div className="grid gap-4 lg:grid-cols-4">
-
-              <div className="lg:col-span-2">
+          <div className="mb-6 rounded-3xl bg-slate-900 border border-slate-800 p-4 sm:p-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div className="sm:col-span-2">
                 <label className="block text-xs text-slate-500 mb-2">
                   Search auctions
                 </label>
 
                 <select
                   value={searchQuery}
-                  onChange={(e) =>
-                    setSearchQuery(e.target.value)
-                  }
-                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 outline-none focus:border-blue-500 transition"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 text-sm sm:text-base outline-none focus:border-blue-500 transition"
                 >
-                  <option value="">
-                    All assets
-                  </option>
+                  <option value="">All assets</option>
 
                   {auctionSymbols.map((symbol) => (
-                    <option
-                      key={symbol}
-                      value={symbol}
-                    >
+                    <option key={symbol} value={symbol}>
                       {symbol}
                     </option>
                   ))}
@@ -432,31 +375,15 @@ export default function AuctionsPage() {
                 <select
                   value={filterStatus}
                   onChange={(e) =>
-                    setFilterStatus(
-                      e.target.value as FilterStatus
-                    )
+                    setFilterStatus(e.target.value as FilterStatus)
                   }
-                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 outline-none focus:border-blue-500 transition"
+                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 text-sm sm:text-base outline-none focus:border-blue-500 transition"
                 >
-                  <option value="all">
-                    All auctions
-                  </option>
-
-                  <option value="live">
-                    Live
-                  </option>
-
-                  <option value="endingSoon">
-                    Ending soon
-                  </option>
-
-                  <option value="ended">
-                    Ended
-                  </option>
-
-                  <option value="sellerListings">
-                    Seller listings
-                  </option>
+                  <option value="all">All auctions</option>
+                  <option value="live">Live</option>
+                  <option value="endingSoon">Ending soon</option>
+                  <option value="ended">Ended</option>
+                  <option value="sellerListings">Seller listings</option>
                 </select>
               </div>
 
@@ -468,79 +395,47 @@ export default function AuctionsPage() {
                 <select
                   value={sortOption}
                   onChange={(e) =>
-                    setSortOption(
-                      e.target.value as SortOption
-                    )
+                    setSortOption(e.target.value as SortOption)
                   }
-                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 outline-none focus:border-blue-500 transition"
+                  className="w-full rounded-xl bg-[#020617] border border-slate-800 px-4 py-3 text-sm sm:text-base outline-none focus:border-blue-500 transition"
                 >
-                  <option value="featured">
-                    Featured
-                  </option>
-
-                  <option value="highestBid">
-                    Highest bid
-                  </option>
-
-                  <option value="endingSoon">
-                    Ending soon
-                  </option>
-
-                  <option value="newest">
-                    Newest listings
-                  </option>
+                  <option value="featured">Featured</option>
+                  <option value="highestBid">Highest bid</option>
+                  <option value="endingSoon">Ending soon</option>
+                  <option value="newest">Newest listings</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {filteredAuctions.length === 0 ? (
-
-              <div className="md:col-span-2 xl:col-span-4 rounded-2xl bg-slate-900 border border-slate-800 p-8 text-center">
+              <div className="sm:col-span-2 xl:col-span-4 rounded-2xl bg-slate-900 border border-slate-800 p-8 text-center">
                 <p className="text-slate-300 font-semibold">
                   No auctions found.
                 </p>
 
                 <p className="text-sm text-slate-500 mt-2">
-                  Create a listing to publish the first
-                  live auction.
+                  Create a listing to publish the first live auction.
                 </p>
               </div>
-
             ) : (
-
               filteredAuctions.map((auction) => {
-
-                const displayedBid =
-                  liveBids[auction.id] ||
-                  auction.currentBid;
-
-                const auctionStatus =
-                  getAuctionStatus(auction);
-
-                const bidCount = mounted
-                  ? bidCounts[auction.id] || 0
-                  : 0;
+                const displayedBid = liveBids[auction.id] || auction.currentBid;
+                const auctionStatus = getAuctionStatus(auction);
+                const bidCount = mounted ? bidCounts[auction.id] || 0 : 0;
 
                 return (
-                  <Link
-                    key={auction.id}
-                    href={`/auction/${auction.id}`}
-                  >
-                    <div className="group h-full cursor-pointer rounded-2xl bg-slate-900 border border-slate-800 p-4 hover:border-blue-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition">
-
-                      <div className="flex items-start justify-between gap-3 mb-4">
-
+                  <Link key={auction.id} href={`/auction/${auction.id}`}>
+                    <div className="group h-full cursor-pointer rounded-2xl bg-slate-900 border border-slate-800 p-4 sm:p-5 hover:border-blue-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition">
+                      <div className="flex items-start justify-between gap-2 sm:gap-3 mb-4">
                         <div className="flex items-center gap-3 min-w-0">
-
-                          <div className="h-12 w-12 shrink-0 rounded-xl bg-[#020617] border border-slate-800 flex items-center justify-center text-3xl group-hover:scale-105 transition">
+                          <div className="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-xl bg-[#020617] border border-slate-800 flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-105 transition">
                             {auction.image}
                           </div>
 
                           <div className="min-w-0">
-                            <h2 className="text-base font-semibold truncate">
+                            <h2 className="text-sm sm:text-base font-semibold truncate">
                               {auction.title}
                             </h2>
 
@@ -551,18 +446,15 @@ export default function AuctionsPage() {
                         </div>
 
                         <span
-                          className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${auctionStatus.className}`}
+                          className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold ${auctionStatus.className}`}
                         >
                           {auctionStatus.label}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4">
                         <div className="rounded-xl bg-[#020617] border border-slate-800 p-3">
-                          <p className="text-[11px] text-slate-500">
-                            Bid
-                          </p>
+                          <p className="text-[11px] text-slate-500">Bid</p>
 
                           <p className="font-bold text-blue-400 mt-1 text-sm">
                             {formatUsd(displayedBid)}
@@ -570,21 +462,15 @@ export default function AuctionsPage() {
                         </div>
 
                         <div className="rounded-xl bg-[#020617] border border-slate-800 p-3">
-                          <p className="text-[11px] text-slate-500">
-                            Ends
-                          </p>
+                          <p className="text-[11px] text-slate-500">Ends</p>
 
                           <p className="font-bold mt-1 text-sm">
-                            {getTimeLeft(
-                              auction.endsAt,
-                              auction.endsIn
-                            )}
+                            {getTimeLeft(auction.endsAt, auction.endsIn)}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between gap-2 text-[11px]">
-
+                      <div className="flex items-center justify-between gap-2 text-[10px] sm:text-[11px]">
                         <span className="rounded-full bg-[#020617] border border-slate-800 px-2.5 py-1 text-slate-400">
                           {bidCount} bids
                         </span>
@@ -598,15 +484,12 @@ export default function AuctionsPage() {
                             Escrow-ready
                           </span>
                         )}
-
                       </div>
                     </div>
                   </Link>
                 );
               })
-
             )}
-
           </div>
         </div>
       </section>
